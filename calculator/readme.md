@@ -6,8 +6,6 @@
 
 A simple calculator web application that supports basic arithmetic operations.
 
-![Calculator Image](calculator.png)
-
 ## Description
 
 This is a simple calculator built using HTML, CSS, and JavaScript. It supports basic arithmetic operations such as addition, subtraction, multiplication, and division.
