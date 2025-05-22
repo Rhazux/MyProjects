@@ -7,8 +7,6 @@ Welcome to MyProjects! This repository contains a collection of various projects
 - [Introduction](#introduction)
 - [Projects](#projects)
 - [How to Use](#how-to-use)
-- [Contributing](#contributing)
-- [License](#license)
 
 ## Introduction
 
