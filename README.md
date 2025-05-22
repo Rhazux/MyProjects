@@ -22,7 +22,7 @@ Here is a list of some of the projects included in this repository:
   
 2. **Rock-Paper-Scissors Game**
    - A simple web-based game where the player competes against the computer in a classic game of Rock-Paper-Scissors.
-   - [View Project](rock-paper-scissors/)
+   - [View Project](RockPaperScissors/)
 
 ## How to Use
 
