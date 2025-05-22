@@ -19,6 +19,10 @@ Here is a list of some of the projects included in this repository:
 1. **Simple Calculator**
    - A web-based calculator that supports basic arithmetic operations.
    - [View Project](calculator/)
+  
+2. **Rock-Paper-Scissors Game**
+   - A simple web-based game where the player competes against the computer in a classic game of Rock-Paper-Scissors.
+   - [View Project](rock-paper-scissors/)
 
 ## How to Use
 
