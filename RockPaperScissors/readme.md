@@ -2,7 +2,7 @@
 
 A simple web-based game where the player competes against the computer in a classic game of Rock-Paper-Scissors.
 
-![image](https://github.com/user-attachments/assets/acd0450c-cf97-4e94-aa90-d4e8a3d9cbc5) ![image](https://github.com/user-attachments/assets/c490842a-edc3-4c94-adf0-25e3195ed270)
+![image](https://github.com/user-attachments/assets/acd0450c-cf97-4e94-aa90-d4e8a3d9cbc5) ![image](https://github.com/user-attachments/assets/64ecd96a-73eb-4c91-a61a-fa6b1954a4c8)
 
 
 
