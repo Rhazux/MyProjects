@@ -1,6 +1,7 @@
 # Simple Calculator
 
-![image](https://github.com/user-attachments/assets/bff14ba1-61d5-4b46-99ee-33b34fb584ce)
+![image](https://github.com/user-attachments/assets/02fff43e-c00e-490e-baa9-8380ed224da0)
+
 
 
 A simple calculator web application that supports basic arithmetic operations.
