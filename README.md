@@ -23,6 +23,10 @@ Here is a list of some of the projects included in this repository:
 2. **Rock-Paper-Scissors Game**
    - A simple web-based game where the player competes against the computer in a classic game of Rock-Paper-Scissors.
    - [View Project](RockPaperScissors/)
+  
+3. **Currency Converter**
+   - A web application that allows users to convert between different currencies with real-time exchange rates.
+   - [View Project](CurrencyConverter/)
 
 ## How to Use
 
