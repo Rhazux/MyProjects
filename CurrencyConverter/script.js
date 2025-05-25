@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const resultText = document.getElementById('result-text');
     const swapButton = document.getElementById('swap');
 
-    const apiKey = '2987e2d656fe91e3b873f6b2'; // Upload 'YOUR_API_KEY' with your API key
+    const apiKey = '2987e2d656fe91e3b873f6b2'; // Use your API Key
     let exchangeRates = {};
 
     // Load currency rates on page load
