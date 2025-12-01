@@ -8,6 +8,9 @@ Stránka moderním způsobem prezentuje:
 - taktiky pro různé herní módy,
 - kontaktní formulář pro feedback.
 
+<img width="1895" height="949" alt="image" src="https://github.com/user-attachments/assets/205d4bff-3a05-4371-a3cb-7fe4104aafb9" />
+
+
 Projekt je vytvořen jako **školní úloha** – demonstruje použití HTML5, Tailwind CSS, vlastního CSS, JavaScriptu, AJAXu, PHP a práce s JSON daty.
 
 ---
@@ -43,4 +46,5 @@ Projekt je vytvořen jako **školní úloha** – demonstruje použití HTML5, T
   - `weapons.php` vrací JSON se zbraněmi,
   - `contact.php` přijímá data z formuláře a ukládá je do log souboru.
 - **JSON (`weapons.json`)** – datový zdroj pro seznam zbraní.
+
 
