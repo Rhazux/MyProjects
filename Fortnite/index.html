@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+<html lang="cs">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fortnite Tactics Hub</title>
+    <meta name="description" content="Fortnite Tactics Hub – tipy, zbraně, loadouty a taktiky pro hráče Fortnite.">
+    <!-- Vlastní efekty (sklo, animace) -->
+    <link rel="stylesheet" href="style.css">
+    <!-- Tailwind CSS přes CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-slate-950 text-slate-50 antialiased">
+    <div class="relative overflow-hidden min-h-screen">
+        <!-- Barevné “aury” v pozadí -->
+        <div class="pointer-events-none absolute inset-0 -z-10">
+            <div class="hero-orbit"></div>
+            <div class="hero-orbit hero-orbit--small"></div>
+        </div>
+
+        <!-- HEADER -->
+        <header class="fixed top-0 left-0 z-40 w-full border-b border-slate-800/70 bg-slate-950/70 backdrop-blur-xl">
+            <div class="mx-auto flex max-w-6xl items-center justify-between px-4 py-3 md:px-6">
+                <!-- Logo -->
+                <a href="#hero" data-scroll class="flex items-center gap-2">
+                    <span
+                        class="inline-flex h-8 w-8 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-400 via-fuchsia-500 to-violet-500 text-xs font-black tracking-tight shadow-lg shadow-fuchsia-500/50">
+                        FT
+                    </span>
+                    <span class="text-sm font-semibold leading-tight md:text-base">
+                        Fortnite
+                        <span class="block text-xs font-normal text-slate-400 md:text-sm">Tactics Hub</span>
+                    </span>
+                </a>
+
+                <!-- Desktop navigace -->
+                <nav class="hidden items-center gap-6 text-xs font-medium md:flex md:text-sm">
+                    <a href="#hero" data-scroll class="nav-link text-slate-300 hover:text-cyan-400">Úvod</a>
+                    <a href="#tips" data-scroll class="nav-link text-slate-300 hover:text-cyan-400">Tipy</a>
+                    <a href="#weapons" data-scroll class="nav-link text-slate-300 hover:text-cyan-400">Zbraně</a>
+                    <a href="#loadouts" data-scroll class="nav-link text-slate-300 hover:text-cyan-400">Loadouty</a>
+                    <a href="#tactics" data-scroll class="nav-link text-slate-300 hover:text-cyan-400">Taktiky</a>
+                    <a href="#contact" data-scroll class="nav-link text-slate-300 hover:text-cyan-400">Kontakt</a>
+                </nav>
+
+                <!-- Mobilní menu button -->
+                <button id="mobileMenuButton"
+                    class="inline-flex flex-col items-center justify-center gap-1.5 rounded-full border border-slate-700/80 bg-slate-900/80 p-2.5 md:hidden">
+                    <span
+                        class="bar-1 h-0.5 w-6 rounded-full bg-slate-100 transition-transform duration-200 ease-out"></span>
+                    <span
+                        class="bar-2 h-0.5 w-6 rounded-full bg-slate-100 transition-opacity duration-150 ease-out"></span>
+                    <span
+                        class="bar-3 h-0.5 w-6 rounded-full bg-slate-100 transition-transform duration-200 ease-out"></span>
+                </button>
+            </div>
+
+            <!-- Mobilní navigace -->
+            <nav id="mobileMenu"
+                class="nav-mobile hidden border-t border-slate-800/80 bg-slate-950/95 px-4 pb-4 pt-2 md:hidden">
+                <div class="flex flex-col gap-2 text-sm">
+                    <a href="#hero" data-scroll
+                        class="nav-link block rounded-xl px-3 py-2 text-slate-300 hover:bg-slate-800/80 hover:text-cyan-400">Úvod</a>
+                    <a href="#tips" data-scroll
+                        class="nav-link block rounded-xl px-3 py-2 text-slate-300 hover:bg-slate-800/80 hover:text-cyan-400">Tipy</a>
+                    <a href="#weapons" data-scroll
+                        class="nav-link block rounded-xl px-3 py-2 text-slate-300 hover:bg-slate-800/80 hover:text-cyan-400">Zbraně</a>
+                    <a href="#loadouts" data-scroll
+                        class="nav-link block rounded-xl px-3 py-2 text-slate-300 hover:bg-slate-800/80 hover:text-cyan-400">Loadouty</a>
+                    <a href="#tactics" data-scroll
+                        class="nav-link block rounded-xl px-3 py-2 text-slate-300 hover:bg-slate-800/80 hover:text-cyan-400">Taktiky</a>
+                    <a href="#contact" data-scroll
+                        class="nav-link block rounded-xl px-3 py-2 text-slate-300 hover:bg-slate-800/80 hover:text-cyan-400">Kontakt</a>
+                </div>
+            </nav>
+        </header>
+
+        <!-- OBSAH -->
+        <main class="relative mx-auto max-w-6xl px-4 pt-28 pb-16 md:px-6 md:pt-32">
+
+            <!-- HERO -->
+            <section id="hero" data-section
+                class="relative grid gap-10 md:grid-cols-[minmax(0,1.4fr)_minmax(0,1fr)] md:items-center">
+                <div>
+                    <span
+                        class="inline-flex items-center gap-2 rounded-full bg-slate-900/80 px-3 py-1 text-xs font-medium text-slate-300 ring-1 ring-slate-700/80">
+                        <span class="inline-block h-1.5 w-1.5 rounded-full bg-emerald-400"></span>
+                        Live meta tips & loadouty
+                    </span>
+
+                    <h1 class="mt-5 text-3xl font-bold tracking-tight sm:text-4xl md:text-5xl">
+                        Zlepši svůj <span
+                            class="bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-500 bg-clip-text text-transparent">Fortnite
+                            aim & rotace</span> jako pro.
+                    </h1>
+
+                    <p class="mt-4 max-w-xl text-sm text-slate-300 sm:text-base">
+                        Fortnite Tactics Hub ti na jedné stránce ukáže doporučené zbraně, loadouty a taktiky pro různé
+                        módy.
+                        Žádné romány – jen konkrétní tipy, které můžeš hned použít ve hře.
+                    </p>
+
+                    <div class="mt-6 flex flex-wrap items-center gap-3">
+                        <a href="#weapons" data-scroll
+                            class="inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-500 px-6 py-3 text-sm font-semibold text-slate-950 shadow-lg shadow-fuchsia-500/40 transition hover:scale-105 hover:shadow-cyan-400/50">
+                            Projít zbraně & loadouty
+                        </a>
+                        <a href="#tips" data-scroll
+                            class="inline-flex items-center gap-2 rounded-full border border-slate-600/80 bg-slate-900/60 px-5 py-3 text-sm font-medium text-slate-200 hover:border-cyan-400 hover:text-cyan-300">
+                            Základní tipy pro lepší game
+                        </a>
+                    </div>
+
+                    <div class="mt-8 flex flex-wrap gap-4 text-xs text-slate-400">
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="h-6 w-6 rounded-full bg-slate-900/80 ring-1 ring-slate-700/80 flex items-center justify-center text-[10px]">
+                                💠
+                            </span>
+                            <span>Tipy pro Zero Build i build módy</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span
+                                class="h-6 w-6 rounded-full bg-slate-900/80 ring-1 ring-slate-700/80 flex items-center justify-center text-[10px]">
+                                ⚡
+                            </span>
+                            <span>Interaktivní filtrace zbraní (AJAX)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Hero “stat” panel -->
+                <aside class="glass-panel hover-glow relative overflow-hidden rounded-3xl p-5">
+                    <div
+                        class="absolute inset-x-0 -top-10 h-32 bg-gradient-to-br from-cyan-400/30 via-fuchsia-500/20 to-violet-500/10 blur-3xl">
+                    </div>
+
+                    <div class="relative flex flex-col gap-4">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-xs uppercase tracking-wide text-slate-400">Rychlý přehled</p>
+                                <p class="mt-1 text-lg font-semibold">Tvoje taktické lobby</p>
+                            </div>
+                            <span
+                                class="rounded-full bg-slate-900/80 px-3 py-1 text-xs font-semibold text-cyan-300 ring-1 ring-cyan-500/50">
+                                Battle Royale
+                            </span>
+                        </div>
+
+                        <div class="grid grid-cols-3 gap-3 text-xs">
+                            <div class="rounded-2xl bg-slate-900/70 p-3 ring-1 ring-slate-700/70">
+                                <p class="text-slate-400">Doporučené zbraně</p>
+                                <p class="mt-2 text-lg font-semibold text-cyan-300">+8</p>
+                                <p class="mt-1 text-[11px] text-slate-400">podle typu a rarity</p>
+                            </div>
+                            <div class="rounded-2xl bg-slate-900/70 p-3 ring-1 ring-slate-700/70">
+                                <p class="text-slate-400">Módy</p>
+                                <p class="mt-2 text-lg font-semibold text-fuchsia-300">4</p>
+                                <p class="mt-1 text-[11px] text-slate-400">Solo, Duo, Trio, Squad</p>
+                            </div>
+                            <div class="rounded-2xl bg-slate-900/70 p-3 ring-1 ring-slate-700/70">
+                                <p class="text-slate-400">Progres</p>
+                                <p class="mt-2 text-lg font-semibold text-emerald-300">+XP</p>
+                                <p class="mt-1 text-[11px] text-slate-400">lepší rozhodování ve hře</p>
+                            </div>
+                        </div>
+
+                        <p class="text-[11px] text-slate-400">
+                            *Neoficiální fan web – žádné napojení na Epic Games. Čistě edukační projekt.
+                        </p>
+                    </div>
+                </aside>
+            </section>
+
+            <!-- TIPY -->
+            <section id="tips" data-section class="mt-16 md:mt-24">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">
+                            Základní tipy, které ti hned zvednou winrate
+                        </h2>
+                        <p class="mt-2 max-w-2xl text-sm text-slate-300">
+                            Než začneš řešit “aim assist” a “RNG”, oprav pár základních chyb – pozicování, rotace,
+                            práce s inventářem a fighty, do kterých vůbec chodíš.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid gap-4 md:grid-cols-3">
+                    <article class="glass-panel hover-glow rounded-3xl p-5">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-cyan-300">Pozicování</p>
+                        <h3 class="mt-2 text-base font-semibold">Highground & cover vždy zdarma</h3>
+                        <p class="mt-2 text-sm text-slate-300">
+                            Bojuj vždy z coveru a snaž se být výš než soupeř. Neotvírej se do několika týmů najednou
+                            a zbytečně nepeakuj.
+                        </p>
+                    </article>
+
+                    <article class="glass-panel hover-glow rounded-3xl p-5">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-fuchsia-300">Rotace</p>
+                        <h3 class="mt-2 text-base font-semibold">Rotuj dřív než zóna donutí</h3>
+                        <p class="mt-2 text-sm text-slate-300">
+                            Plánuj si cestu do další zóny dopředu. Nečekej, až tě zóna donutí běžet “open field”
+                            proti třem týmům, co tě drží z kopce.
+                        </p>
+                    </article>
+
+                    <article class="glass-panel hover-glow rounded-3xl p-5">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Inventář</p>
+                        <h3 class="mt-2 text-base font-semibold">Jeden loadout, který znáš na 100 %</h3>
+                        <p class="mt-2 text-sm text-slate-300">
+                            Místo 10 různých kombinací měj 1–2 oblíbené loadouty a ty trénuj pořád dokola.
+                            Mozek řeší méně věcí → lepší aim a rozhodování.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- ZBRANĚ & LOADOUTY (AJAX + DATA) -->
+            <section id="weapons" data-section class="mt-16 md:mt-24">
+                <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+                    <div>
+                        <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">
+                            Zbraně & loadouty podle módu a stylu
+                        </h2>
+                        <p class="mt-2 max-w-2xl text-sm text-slate-300">
+                            Data níže se načítají přes AJAX z JSON souboru přes backend (PHP). Můžeš je filtrovat
+                            podle typu zbraně a rarity.
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Filtry -->
+                <div
+                    class="mt-6 flex flex-wrap items-center gap-4 rounded-2xl bg-slate-900/70 p-4 ring-1 ring-slate-800/80">
+                    <div class="flex flex-col gap-1 text-xs">
+                        <span class="text-slate-400">Typ zbraně</span>
+                        <select id="weaponFilterType"
+                            class="rounded-xl border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:border-cyan-400 focus:outline-none">
+                            <option value="all">Všechny</option>
+                            <option value="AR">Assault Rifle</option>
+                            <option value="Shotgun">Shotgun</option>
+                            <option value="SMG">SMG</option>
+                            <option value="Sniper">Sniper</option>
+                            <option value="Utility">Utility</option>
+                        </select>
+                    </div>
+
+                    <div class="flex flex-col gap-1 text-xs">
+                        <span class="text-slate-400">Rarita</span>
+                        <select id="weaponFilterRarity"
+                            class="rounded-xl border border-slate-700 bg-slate-900/80 px-3 py-2 text-sm text-slate-100 focus:border-cyan-400 focus:outline-none">
+                            <option value="all">Všechny</option>
+                            <option value="Common">Common</option>
+                            <option value="Rare">Rare</option>
+                            <option value="Epic">Epic</option>
+                            <option value="Legendary">Legendary</option>
+                            <option value="Mythic">Mythic</option>
+                        </select>
+                    </div>
+
+                    <button id="weaponResetFilters"
+                        class="ml-auto inline-flex items-center gap-2 rounded-full border border-slate-700/80 px-3 py-2 text-xs font-medium text-slate-300 hover:border-cyan-400 hover:text-cyan-300">
+                        Reset filtrů
+                    </button>
+                </div>
+
+                <!-- Grid zbraní (naplní se přes JS) -->
+                <div id="weaponGrid" class="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                    <!-- Karty se generují v JS -->
+                </div>
+
+                <p id="weaponEmpty" class="mt-4 hidden text-sm text-slate-400">
+                    Pro zadaný filtr nebyly nalezeny žádné zbraně nebo loadouty.
+                </p>
+            </section>
+
+            <!-- LOADOUTY -->
+            <section id="loadouts" data-section class="mt-16 md:mt-24">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">
+                            Nejlepší loadouty (Meta)
+                        </h2>
+                        <p class="mt-2 max-w-2xl text-sm text-slate-300">
+                            Vybrané kombinace zbraní, které aktuálně dominují v sezóně.
+                            Měj vždy ideální setup pro každou situaci.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid gap-6 md:grid-cols-2">
+                    <!-- Zero Build Loadout -->
+                    <article class="glass-panel hover-glow relative overflow-hidden rounded-3xl p-6">
+                        <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-cyan-500/20 blur-3xl"></div>
+
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-slate-100">Zero Build "W-Key"</h3>
+                            <span
+                                class="rounded-lg bg-cyan-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-cyan-400 ring-1 ring-cyan-500/20">Aggressive</span>
+                        </div>
+
+                        <div class="mt-4 space-y-3">
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_auto_shotgun.png" alt="Auto Shotgun"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Auto Shotgun</p>
+                                    <p class="text-xs text-slate-400">Na blízko v overhieldu</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_red_eye_ar.png" alt="Red-Eye AR"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Red-Eye AR / Burst</p>
+                                    <p class="text-xs text-slate-400">Přesnost na dálku</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_bunker.png" alt="Port-A-Bunker"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Bunker / Port-A-Fort</p>
+                                    <p class="text-xs text-slate-400">Instantní cover</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_shockwave.png" alt="Shockwave Grenade"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Shockwaves / Grapple</p>
+                                    <p class="text-xs text-slate-400">Mobilita je život</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Build Mode Loadout -->
+                    <article class="glass-panel hover-glow relative overflow-hidden rounded-3xl p-6">
+                        <div class="absolute -right-10 -top-10 h-32 w-32 rounded-full bg-fuchsia-500/20 blur-3xl"></div>
+
+                        <div class="flex items-center justify-between">
+                            <h3 class="text-lg font-bold text-slate-100">Build Mode "Boxfight"</h3>
+                            <span
+                                class="rounded-lg bg-fuchsia-500/10 px-2 py-1 text-[10px] font-bold uppercase tracking-wider text-fuchsia-400 ring-1 ring-fuchsia-500/20">Competitive</span>
+                        </div>
+
+                        <div class="mt-4 space-y-3">
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_pump_shotgun.png" alt="Pump Shotgun"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Pump Shotgun</p>
+                                    <p class="text-xs text-slate-400">High damage peeky</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_twin_mag_smg.png" alt="Twin Mag SMG"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Twin Mag SMG</p>
+                                    <p class="text-xs text-slate-400">Bleed damage přes stěny</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_reaper_sniper.png" alt="Reaper Sniper Rifle"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Sniper Rifle</p>
+                                    <p class="text-xs text-slate-400">Entry pick na dálku</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-3 rounded-xl bg-slate-900/50 p-2 text-sm">
+                                <div
+                                    class="flex h-12 w-12 shrink-0 items-center justify-center rounded-lg bg-slate-800/50 p-1">
+                                    <img src="assets/images/icon_minis.png" alt="Minis"
+                                        class="h-full w-full object-contain">
+                                </div>
+                                <div>
+                                    <p class="font-semibold text-slate-200">Minis & Big Pot</p>
+                                    <p class="text-xs text-slate-400">Rychlý heal v boxu</p>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+                </div>
+            </section>
+
+            <!-- TAKTIKY -->
+            <section id="tactics" data-section class="mt-16 md:mt-24">
+                <div class="flex items-center justify-between gap-4">
+                    <div>
+                        <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">
+                            Taktiky podle herního módu
+                        </h2>
+                        <p class="mt-2 max-w-2xl text-sm text-slate-300">
+                            Každý mód se hraje trochu jinak. Zero Build není jen “bez stavění” –
+                            celé pozicování, pohyb a fighty se mění.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="mt-6 grid gap-4 md:grid-cols-3">
+                    <article class="glass-panel hover-glow rounded-3xl p-5">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-cyan-300">Zero Build</p>
+                        <h3 class="mt-2 text-base font-semibold">Cover je nový build</h3>
+                        <p class="mt-2 text-sm text-slate-300">
+                            Hraj víc pomalu, využívej kameny, stromy a struktury jako štít.
+                            Auto a mobilita jsou klíčové. Neudržuj se dlouho na jednom místě.
+                        </p>
+                    </article>
+
+                    <article class="glass-panel hover-glow rounded-3xl p-5">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-fuchsia-300">Build mód</p>
+                        <h3 class="mt-2 text-base font-semibold">Nejprve bezpečný build, až pak edit playe</h3>
+                        <p class="mt-2 text-sm text-slate-300">
+                            Nauč se pár základních defensivních buildů (box, ramp wall) a používej je pořád.
+                            10 % mechanik, které zvládneš na 100 %, je lepší než 100 triků na 10 %.
+                        </p>
+                    </article>
+
+                    <article class="glass-panel hover-glow rounded-3xl p-5">
+                        <p class="text-xs font-semibold uppercase tracking-wide text-emerald-300">Squad / Trio</p>
+                        <h3 class="mt-2 text-base font-semibold">Cally & focus fire</h3>
+                        <p class="mt-2 text-sm text-slate-300">
+                            Domluvte si jednoduché cally a callujte targety, do kterých všichni pálíte.
+                            Tým, který střílí na stejný cíl, vždycky delete-ne soupeře rychleji.
+                        </p>
+                    </article>
+                </div>
+            </section>
+
+            <!-- KONTAKT -->
+            <section id="contact" data-section class="mt-16 md:mt-24">
+                <div class="grid gap-10 md:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)] md:items-start">
+                    <div>
+                        <h2 class="text-2xl font-semibold tracking-tight md:text-3xl">
+                            Kontakt & feedback
+                        </h2>
+                        <p class="mt-2 max-w-xl text-sm text-slate-300">
+                            Máš nápad na další loadout, taktický tip nebo mě chceš jen pochválit/hejtit?
+                            Napiš mi zprávu přes formulář. Po odeslání se data zpracují na backendu přes PHP
+                            a odpověď přijde zpět v JSONu (AJAX, bez reloadu stránky).
+                        </p>
+
+                        <dl class="mt-6 grid gap-3 text-xs text-slate-400">
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/80 text-[11px]">📧</span>
+                                <span>Školní projekt – Fortnite Tactics Hub</span>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span
+                                    class="inline-flex h-6 w-6 items-center justify-center rounded-full bg-slate-900/80 text-[11px]">💻</span>
+                                <span>HTML5 · Tailwind CSS · JavaScript · AJAX · PHP · JSON</span>
+                            </div>
+                        </dl>
+                    </div>
+
+                    <div class="glass-panel rounded-3xl p-5">
+                        <form id="contactForm" class="space-y-4">
+                            <div class="flex flex-col gap-1">
+                                <label for="contactName" class="text-xs font-medium text-slate-300">Nick / jméno</label>
+                                <input id="contactName" name="name" type="text" required
+                                    class="rounded-xl border border-slate-700 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
+                                    placeholder="Např. ProBuilderCZ">
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label for="contactEmail" class="text-xs font-medium text-slate-300">E-mail</label>
+                                <input id="contactEmail" name="email" type="email" required
+                                    class="rounded-xl border border-slate-700 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
+                                    placeholder="tvuj@email.cz">
+                            </div>
+                            <div class="flex flex-col gap-1">
+                                <label for="contactMessage" class="text-xs font-medium text-slate-300">Zpráva</label>
+                                <textarea id="contactMessageInput" name="message" rows="4" required
+                                    class="rounded-xl border border-slate-700 bg-slate-950/80 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500 focus:border-cyan-400 focus:outline-none"
+                                    placeholder="Napiš tip, dotaz nebo feedback..."></textarea>
+                            </div>
+
+                            <button type="submit"
+                                class="inline-flex w-full items-center justify-center gap-2 rounded-full bg-gradient-to-r from-cyan-400 via-fuchsia-500 to-violet-500 px-5 py-2.5 text-sm font-semibold text-slate-950 shadow-lg shadow-fuchsia-500/40 transition hover:scale-105 hover:shadow-cyan-400/50">
+                                Odeslat feedback
+                            </button>
+
+                            <p id="contactStatus" class="min-h-[1.5rem] text-xs text-slate-400"></p>
+                        </form>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- MODÁLNÍ OKNO ZBRANĚ -->
+        <div id="weaponModal" class="fixed inset-0 z-50 hidden items-center justify-center bg-black/70 px-4 py-10">
+            <div class="glass-panel relative w-full max-w-lg rounded-3xl p-6">
+                <button id="weaponModalClose"
+                    class="absolute right-4 top-4 rounded-full bg-slate-900/80 p-1.5 text-xs text-slate-400 hover:text-slate-50">
+                    ✕
+                </button>
+                <p id="weaponModalMeta" class="text-xs uppercase tracking-wide text-slate-400"></p>
+                <h3 id="weaponModalTitle" class="mt-1 text-xl font-semibold text-slate-50"></h3>
+                <p id="weaponModalDesc" class="mt-3 text-sm text-slate-300"></p>
+                <div class="mt-4 rounded-2xl bg-slate-900/80 p-3 text-sm text-slate-200 ring-1 ring-cyan-500/40">
+                    <p class="text-xs font-semibold uppercase tracking-wide text-cyan-300">Tip do hry</p>
+                    <p id="weaponModalTip" class="mt-1 text-sm text-slate-200"></p>
+                </div>
+            </div>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="border-t border-slate-800/70 bg-slate-950/80">
+            <div
+                class="mx-auto flex max-w-6xl flex-col gap-3 px-4 py-5 text-xs text-slate-500 md:flex-row md:items-center md:justify-between md:px-6">
+                <span>© 2026 Fortnite Tactics Hub – školní projekt.</span>
+                <span>Stack: HTML · Tailwind · JS · AJAX · PHP · JSON · GitHub</span>
+            </div>
+        </footer>
+    </div>
+
+    <script src="assets/js/app.js"></script>
+</body>
+
+</html>
