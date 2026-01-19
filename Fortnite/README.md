@@ -52,8 +52,3 @@ Fortnite/
 4.  **Responzivita**: Web je plně optimalizovaný pro mobily, tablety i desktopy.
 5.  **Moderní UI**: Použití "Glassmorphism" designu, animovaného pozadí a hover efektů.
 
-## 📝 Poznámky pro hodnocení
-
-*   **AJAX**: Implementován ve funkci `loadWeapons()` (GET) a odeslání formuláře (POST).
-*   **Backend**: `server.js` zpracovává requesty na `/api/weapons.php` a `/api/contact.php`.
-*   **One-Page**: Plynulé scrollování mezi sekcemi pomocí navigačních odkazů.
