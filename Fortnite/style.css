@@ -1,0 +1,92 @@
+:root {
+    color-scheme: dark;
+}
+
+body {
+    min-height: 100vh;
+    background:
+        linear-gradient(to bottom, rgba(2, 6, 23, 0.7), rgba(2, 6, 23, 0.85)),
+        url('assets/images/bg_real.png');
+    background-size: cover;
+    background-position: center 30%;
+    /* Focus more on the sky/landscape */
+    background-attachment: fixed;
+}
+
+/* Skleněné panely */
+.glass-panel {
+    background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.8));
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    box-shadow: 0 18px 60px rgba(15, 23, 42, 0.9);
+    backdrop-filter: blur(18px);
+}
+
+/* Glow efekt na hover */
+.hover-glow {
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 18px 40px rgba(56, 189, 248, 0.25);
+}
+
+.hover-glow:hover {
+    box-shadow: 0 25px 80px rgba(129, 140, 248, 0.6);
+    transform: translateY(-4px);
+}
+
+/* Barevné “orbity” v pozadí */
+.hero-orbit {
+    position: absolute;
+    pointer-events: none;
+    width: 520px;
+    height: 520px;
+    border-radius: 9999px;
+    left: 50%;
+    top: -140px;
+    transform: translateX(-50%);
+    background: conic-gradient(from 180deg,
+            rgba(56, 189, 248, 0.25),
+            rgba(249, 115, 22, 0.1),
+            rgba(236, 72, 153, 0.3),
+            rgba(129, 140, 248, 0.25),
+            rgba(56, 189, 248, 0.25));
+    opacity: 0.3;
+    filter: blur(10px);
+    animation: orbit-spin 40s linear infinite;
+}
+
+.hero-orbit--small {
+    width: 280px;
+    height: 280px;
+    top: 160px;
+    opacity: 0.22;
+    filter: blur(16px);
+    animation-duration: 55s;
+}
+
+@keyframes orbit-spin {
+    from {
+        transform: translateX(-50%) rotate(0deg);
+    }
+
+    to {
+        transform: translateX(-50%) rotate(360deg);
+    }
+}
+
+/* Hamburger animace */
+#mobileMenuButton.is-open .bar-1 {
+    transform: translateY(6px) rotate(45deg);
+}
+
+#mobileMenuButton.is-open .bar-2 {
+    opacity: 0;
+}
+
+#mobileMenuButton.is-open .bar-3 {
+    transform: translateY(-6px) rotate(-45deg);
+}
+
+/* Aktivní link v navigaci */
+.nav-link-active {
+    color: rgb(34 211 238);
+    /* cyan-400 */
+}
