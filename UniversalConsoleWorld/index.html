@@ -1,0 +1,2036 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Univerzální Konzole Pro Řízení Virtuálních Světů</title>
+  <style>
+    :root{
+      --bg-1:#050d18;
+      --bg-2:#0c1530;
+      --bg-3:#101d3d;
+      --panel:rgba(13, 23, 48, 0.75);
+      --text:#eef5ff;
+      --muted:#96add5;
+      --cyan:#46dcff;
+      --purple:#8b5cf6;
+      --pink:#ff4ecd;
+      --green:#34e18d;
+      --yellow:#ffd166;
+      --red:#ff6b6b;
+      --border:rgba(255,255,255,.08);
+      --border-strong:rgba(70,220,255,.18);
+      --shadow:0 24px 70px rgba(0,0,0,.42);
+      --radius-xl:28px;
+      --radius-lg:22px;
+      --radius-md:16px;
+      --radius-sm:12px;
+    }
+
+    *{
+      box-sizing:border-box;
+      margin:0;
+      padding:0;
+    }
+
+    html, body{
+      height:100%;
+    }
+
+    body{
+      font-family:Inter, Arial, Helvetica, sans-serif;
+      color:var(--text);
+      min-height:100vh;
+      background:
+        radial-gradient(circle at top left, rgba(70,220,255,.16), transparent 28%),
+        radial-gradient(circle at top right, rgba(139,92,246,.14), transparent 30%),
+        radial-gradient(circle at bottom left, rgba(255,78,205,.10), transparent 24%),
+        linear-gradient(135deg, var(--bg-1), var(--bg-2) 55%, var(--bg-3));
+      overflow-x:hidden;
+    }
+
+    .bg-grid{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      background-image:
+        linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size:30px 30px;
+      mask-image:radial-gradient(circle at center, black 45%, transparent 100%);
+      opacity:.45;
+      z-index:0;
+    }
+
+    .page{
+      position:relative;
+      z-index:1;
+      width:min(1650px, 95%);
+      margin:24px auto;
+      display:grid;
+      grid-template-columns:320px 1fr 420px;
+      gap:20px;
+      align-items:start;
+    }
+
+    .card{
+      background:var(--panel);
+      border:1px solid var(--border);
+      border-radius:var(--radius-xl);
+      box-shadow:var(--shadow);
+      backdrop-filter:blur(14px);
+      -webkit-backdrop-filter:blur(14px);
+    }
+
+    .sidebar, .main, .rightbar{
+      display:flex;
+      flex-direction:column;
+      gap:20px;
+    }
+
+    .section{
+      padding:20px;
+    }
+
+    .hero{
+      grid-column:1 / -1;
+      padding:26px;
+      display:flex;
+      justify-content:space-between;
+      align-items:flex-start;
+      gap:20px;
+      overflow:hidden;
+      position:relative;
+    }
+
+    .hero::before{
+      content:"";
+      position:absolute;
+      right:-120px;
+      top:-120px;
+      width:420px;
+      height:420px;
+      border-radius:50%;
+      background:radial-gradient(circle, rgba(70,220,255,.18), transparent 65%);
+      filter:blur(20px);
+      pointer-events:none;
+    }
+
+    .hero-left h1{
+      font-size:clamp(30px, 4vw, 52px);
+      line-height:1.02;
+      letter-spacing:-1.3px;
+      margin-bottom:12px;
+    }
+
+    .hero-left p{
+      color:var(--muted);
+      line-height:1.7;
+      max-width:920px;
+      font-size:15px;
+    }
+
+    .hero-badges{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      margin-top:18px;
+    }
+
+    .badge{
+      padding:10px 14px;
+      border-radius:999px;
+      background:rgba(255,255,255,.05);
+      border:1px solid var(--border);
+      color:#dbe8ff;
+      font-size:13px;
+    }
+
+    .hero-stats{
+      display:grid;
+      grid-template-columns:repeat(2, minmax(130px, 1fr));
+      gap:12px;
+      min-width:320px;
+    }
+
+    .stat-box{
+      padding:16px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+    }
+
+    .stat-box .value{
+      font-size:28px;
+      font-weight:800;
+      margin-bottom:4px;
+    }
+
+    .stat-box .label{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .panel-title{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:12px;
+      margin-bottom:16px;
+    }
+
+    .panel-title h2{
+      font-size:20px;
+      letter-spacing:-.4px;
+    }
+
+    .panel-title span{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .small-note{
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.6;
+    }
+
+    .world-switch{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+      margin-top:12px;
+    }
+
+    .toggle-chip{
+      padding:12px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      cursor:pointer;
+      font-weight:700;
+      transition:.18s ease;
+      text-align:center;
+    }
+
+    .toggle-chip.active{
+      border-color:var(--border-strong);
+      background:linear-gradient(90deg, rgba(70,220,255,.14), rgba(139,92,246,.12));
+      box-shadow:0 0 0 1px rgba(70,220,255,.08) inset;
+    }
+
+    .object-list{
+      display:grid;
+      gap:10px;
+      max-height:420px;
+      overflow:auto;
+      padding-right:4px;
+    }
+
+    .object-item{
+      padding:14px;
+      border-radius:18px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      cursor:pointer;
+      transition:.18s ease;
+    }
+
+    .object-item:hover{
+      transform:translateY(-1px);
+      border-color:rgba(70,220,255,.22);
+    }
+
+    .object-item.active-item{
+      border-color:rgba(70,220,255,.42);
+      background:linear-gradient(180deg, rgba(70,220,255,.10), rgba(255,255,255,.04));
+      box-shadow:0 0 0 1px rgba(70,220,255,.10) inset;
+    }
+
+    .object-item-top{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:flex-start;
+      margin-bottom:8px;
+    }
+
+    .object-item-name{
+      font-weight:800;
+      font-size:16px;
+      margin-bottom:4px;
+    }
+
+    .object-item-type{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .dot-state{
+      width:12px;
+      height:12px;
+      border-radius:50%;
+      flex-shrink:0;
+      margin-top:4px;
+      box-shadow:0 0 16px currentColor;
+    }
+
+    .dot-on{ background:var(--green); color:var(--green); }
+    .dot-off{ background:var(--red); color:var(--red); }
+
+    .object-item-bottom{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .controls-grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .action-btn, .primary-btn, .danger-btn{
+      border:none;
+      cursor:pointer;
+      padding:13px 15px;
+      border-radius:14px;
+      font-weight:800;
+      color:white;
+      transition:.18s ease;
+    }
+
+    .primary-btn{
+      background:linear-gradient(90deg, var(--cyan), var(--purple));
+    }
+
+    .action-btn{
+      background:rgba(255,255,255,.07);
+      border:1px solid var(--border);
+    }
+
+    .danger-btn{
+      background:linear-gradient(90deg, #ff7c7c, #ff4f4f);
+    }
+
+    .primary-btn:hover, .action-btn:hover, .danger-btn:hover{
+      transform:translateY(-1px);
+      filter:brightness(1.04);
+    }
+
+    .map-shell{
+      padding:18px;
+    }
+
+    .map-toolbar{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+      justify-content:space-between;
+      margin-bottom:14px;
+    }
+
+    .toolbar-left, .toolbar-right{
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+      align-items:center;
+    }
+
+    .mini-pill{
+      padding:10px 12px;
+      border-radius:999px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      font-size:13px;
+      color:var(--text);
+      cursor:pointer;
+      transition:.18s ease;
+      user-select:none;
+    }
+
+    .mini-pill.active{
+      background:linear-gradient(90deg, rgba(70,220,255,.14), rgba(139,92,246,.12));
+      border-color:var(--border-strong);
+    }
+
+    .map-wrapper{
+      position:relative;
+      height:620px;
+      border-radius:26px;
+      overflow:hidden;
+      border:1px solid var(--border);
+      background:
+        radial-gradient(circle at center, rgba(70,220,255,.10), transparent 35%),
+        radial-gradient(circle at center, rgba(139,92,246,.08), transparent 55%),
+        linear-gradient(rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,.035) 1px, transparent 1px),
+        linear-gradient(180deg, rgba(8,14,28,.95), rgba(10,18,34,.98));
+      background-size:100% 100%, 100% 100%, 42px 42px, 42px 42px, 100% 100%;
+    }
+
+    .radar-rings{
+      position:absolute;
+      inset:0;
+      pointer-events:none;
+    }
+
+    .ring{
+      position:absolute;
+      left:50%;
+      top:50%;
+      transform:translate(-50%, -50%);
+      border:1px solid rgba(255,255,255,.06);
+      border-radius:50%;
+    }
+
+    .ring.r1{ width:150px; height:150px; }
+    .ring.r2{ width:280px; height:280px; }
+    .ring.r3{ width:420px; height:420px; }
+    .ring.r4{ width:560px; height:560px; }
+
+    .axis-x, .axis-y{
+      position:absolute;
+      background:rgba(255,255,255,.08);
+      pointer-events:none;
+    }
+
+    .axis-x{
+      left:0;
+      right:0;
+      top:50%;
+      height:1px;
+    }
+
+    .axis-y{
+      top:0;
+      bottom:0;
+      left:50%;
+      width:1px;
+    }
+
+    .map-label{
+      position:absolute;
+      font-size:11px;
+      color:rgba(255,255,255,.48);
+      pointer-events:none;
+      user-select:none;
+    }
+
+    .map-object{
+      position:absolute;
+      transform:translate(-50%, -50%);
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:7px;
+      cursor:grab;
+      user-select:none;
+      transition:left .18s ease, top .18s ease, transform .18s ease, opacity .18s ease;
+      z-index:3;
+    }
+
+    .map-object.dragging{
+      cursor:grabbing;
+      transition:none;
+      z-index:20;
+    }
+
+    .map-object.hidden{
+      opacity:.18;
+    }
+
+    .map-object:hover{
+      transform:translate(-50%, -50%) scale(1.04);
+    }
+
+    .map-object.selected{
+      z-index:12;
+    }
+
+    .map-object.selected .map-core{
+      transform:scale(1.16);
+      box-shadow:0 0 0 9px rgba(255,255,255,.05), 0 0 26px rgba(255,255,255,.14);
+    }
+
+    .map-core{
+      width:22px;
+      height:22px;
+      border-radius:50%;
+      border:2px solid rgba(255,255,255,.9);
+      position:relative;
+      transition:.18s ease;
+      box-shadow:0 0 0 7px rgba(255,255,255,.03);
+    }
+
+    .map-object.active-state .map-core{
+      box-shadow:0 0 0 7px rgba(70,220,255,.08), 0 0 24px rgba(70,220,255,.35);
+    }
+
+    .map-object.inactive-state .map-core{
+      box-shadow:0 0 0 7px rgba(255,107,107,.06), 0 0 20px rgba(255,107,107,.25);
+    }
+
+    .map-object-name{
+      font-size:12px;
+      font-weight:800;
+      white-space:nowrap;
+      padding:6px 9px;
+      border-radius:999px;
+      background:rgba(8,14,28,.88);
+      border:1px solid rgba(255,255,255,.08);
+      color:#eef6ff;
+      backdrop-filter:blur(8px);
+    }
+
+    .map-object-coord{
+      font-size:11px;
+      color:rgba(255,255,255,.62);
+      background:rgba(8,14,28,.72);
+      padding:4px 8px;
+      border-radius:999px;
+      border:1px solid rgba(255,255,255,.06);
+    }
+
+    .detail-panel{
+      display:grid;
+      gap:14px;
+    }
+
+    .detail-hero{
+      padding:18px;
+      border-radius:22px;
+      border:1px solid var(--border);
+      background:
+        linear-gradient(180deg, rgba(70,220,255,.08), rgba(255,255,255,.03));
+    }
+
+    .detail-top{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:14px;
+    }
+
+    .detail-name{
+      font-size:24px;
+      font-weight:900;
+      letter-spacing:-.5px;
+      margin-bottom:5px;
+    }
+
+    .detail-type{
+      color:var(--muted);
+      font-size:13px;
+    }
+
+    .status-badge{
+      padding:9px 13px;
+      border-radius:999px;
+      font-size:12px;
+      font-weight:800;
+      border:1px solid var(--border);
+    }
+
+    .status-badge.on{
+      color:var(--green);
+      background:rgba(52,225,141,.13);
+    }
+
+    .status-badge.off{
+      color:var(--red);
+      background:rgba(255,107,107,.12);
+    }
+
+    .detail-stats{
+      display:grid;
+      grid-template-columns:repeat(3, 1fr);
+      gap:10px;
+    }
+
+    .detail-stat{
+      padding:12px;
+      border-radius:16px;
+      border:1px solid rgba(255,255,255,.06);
+      background:rgba(255,255,255,.04);
+    }
+
+    .detail-stat .small{
+      color:var(--muted);
+      font-size:12px;
+      margin-bottom:6px;
+    }
+
+    .detail-stat .big{
+      font-size:20px;
+      font-weight:800;
+    }
+
+    .control-box{
+      padding:16px;
+      border-radius:20px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+    }
+
+    .control-box-head{
+      display:flex;
+      justify-content:space-between;
+      gap:10px;
+      align-items:center;
+      margin-bottom:12px;
+    }
+
+    .control-box-head h3{
+      font-size:16px;
+    }
+
+    .control-box-head span{
+      color:var(--muted);
+      font-size:12px;
+    }
+
+    .row{
+      display:flex;
+      gap:10px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+
+    .row-2{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    input[type="text"], input[type="number"], select{
+      width:100%;
+      padding:13px 13px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.05);
+      color:var(--text);
+      outline:none;
+      font-size:14px;
+    }
+
+    input[type="text"]:focus, input[type="number"]:focus, select:focus{
+      border-color:rgba(70,220,255,.38);
+      box-shadow:0 0 0 4px rgba(70,220,255,.08);
+    }
+
+    input[type="range"]{
+      width:100%;
+      accent-color:#46dcff;
+      cursor:pointer;
+    }
+
+    .energy-wrap{
+      display:flex;
+      gap:10px;
+      align-items:center;
+    }
+
+    .energy-number{
+      width:90px !important;
+      text-align:center;
+      font-weight:800;
+    }
+
+    .energy-bar{
+      width:100%;
+      height:11px;
+      border-radius:999px;
+      overflow:hidden;
+      background:rgba(255,255,255,.08);
+      border:1px solid rgba(255,255,255,.06);
+      margin-top:10px;
+    }
+
+    .energy-fill{
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg, var(--cyan), var(--purple), var(--pink));
+      transition:width .2s ease;
+    }
+
+    .console-shell{
+      background:#09101f;
+      border:1px solid var(--border);
+      border-radius:20px;
+      overflow:hidden;
+    }
+
+    .console-header{
+      padding:12px 16px;
+      border-bottom:1px solid var(--border);
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      background:linear-gradient(90deg, rgba(70,220,255,.12), rgba(139,92,246,.12));
+    }
+
+    .dots{
+      display:flex;
+      gap:8px;
+    }
+
+    .dot{
+      width:11px;
+      height:11px;
+      border-radius:50%;
+    }
+
+    .dot.red{ background:#ff5f57; }
+    .dot.yellow{ background:#ffbd2f; }
+    .dot.green{ background:#28c840; }
+
+    .console-output{
+      min-height:250px;
+      max-height:360px;
+      overflow:auto;
+      padding:16px;
+      font-family:Consolas, monospace;
+      font-size:14px;
+      line-height:1.55;
+      color:#dff7ff;
+      background:
+        radial-gradient(circle at top, rgba(70,220,255,.06), transparent 25%),
+        #09101f;
+    }
+
+    .line{
+      margin-bottom:10px;
+      white-space:pre-wrap;
+      word-break:break-word;
+    }
+
+    .prompt{ color:var(--green); }
+    .sys{ color:var(--cyan); }
+    .err{ color:var(--red); }
+    .warn{ color:var(--yellow); }
+
+    .console-input-wrap{
+      padding:14px;
+      border-top:1px solid var(--border);
+      background:#0a1223;
+      display:flex;
+      flex-wrap:wrap;
+      gap:10px;
+    }
+
+    .console-input{
+      flex:1;
+      min-width:220px;
+      padding:14px 16px;
+      border-radius:14px;
+      border:1px solid var(--border);
+      background:rgba(255,255,255,.04);
+      color:var(--text);
+      outline:none;
+      font-size:15px;
+    }
+
+    .modal-backdrop{
+      position:fixed;
+      inset:0;
+      background:rgba(0,0,0,.42);
+      backdrop-filter:blur(8px);
+      -webkit-backdrop-filter:blur(8px);
+      display:none;
+      align-items:center;
+      justify-content:center;
+      z-index:100;
+      padding:20px;
+    }
+
+    .modal-backdrop.show{
+      display:flex;
+    }
+
+    .modal{
+      width:min(560px, 100%);
+      background:rgba(13, 23, 48, 0.92);
+      border:1px solid var(--border);
+      border-radius:28px;
+      box-shadow:0 24px 70px rgba(0,0,0,.45);
+      padding:22px;
+    }
+
+    .modal-head{
+      display:flex;
+      justify-content:space-between;
+      gap:12px;
+      align-items:flex-start;
+      margin-bottom:18px;
+    }
+
+    .modal-head h3{
+      font-size:24px;
+      letter-spacing:-.5px;
+      margin-bottom:6px;
+    }
+
+    .modal-head p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.6;
+    }
+
+    .icon-btn{
+      width:42px;
+      height:42px;
+      border:none;
+      border-radius:14px;
+      cursor:pointer;
+      background:rgba(255,255,255,.07);
+      color:white;
+      font-size:20px;
+      border:1px solid var(--border);
+    }
+
+    .form-grid{
+      display:grid;
+      gap:12px;
+    }
+
+    .footer-actions{
+      display:flex;
+      justify-content:flex-end;
+      gap:10px;
+      margin-top:16px;
+      flex-wrap:wrap;
+    }
+
+    .command-help{
+      display:grid;
+      gap:10px;
+    }
+
+    .command-item{
+      padding:14px 16px;
+      border-radius:16px;
+      background:rgba(255,255,255,.04);
+      border:1px solid var(--border);
+    }
+
+    .command-item code{
+      display:block;
+      color:var(--cyan);
+      margin-bottom:6px;
+      font-family:Consolas, monospace;
+    }
+
+    .command-item p{
+      color:var(--muted);
+      font-size:14px;
+      line-height:1.5;
+    }
+
+    @media (max-width: 1450px){
+      .page{
+        grid-template-columns:280px 1fr 390px;
+      }
+    }
+
+    @media (max-width: 1250px){
+      .page{
+        grid-template-columns:1fr;
+      }
+
+      .hero{
+        flex-direction:column;
+        align-items:flex-start;
+      }
+
+      .hero-stats{
+        width:100%;
+        min-width:unset;
+      }
+
+      .map-wrapper{
+        height:520px;
+      }
+    }
+
+    @media (max-width: 700px){
+      .detail-stats, .row-2, .hero-stats, .world-switch{
+        grid-template-columns:1fr;
+      }
+
+      .map-wrapper{
+        height:420px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="bg-grid"></div>
+
+  <div class="page">
+    <section class="hero card">
+      <div class="hero-left">
+        <h1>Univerzální Konzole Pro Řízení Virtuálních Světů</h1>
+        <p>
+          Interaktivní rozhraní pro práci s objekty ve virtuálním světě. --- > Admini Virtuálního Světa: Verner, Strnad, Čemeryš
+        </p>
+        <div class="hero-badges">
+          <div class="badge">CLI</div>
+          <div class="badge">GUI</div>
+          <div class="badge">Objekty</div>
+          <div class="badge">Mapa</div>
+          <div class="badge">Příkazy</div>
+        </div>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-box">
+          <div class="value" id="statTotal">0</div>
+          <div class="label">Objektů Ve Světě</div>
+        </div>
+        <div class="stat-box">
+          <div class="value" id="statActive">0</div>
+          <div class="label">Aktivních Objektů</div>
+        </div>
+        <div class="stat-box">
+          <div class="value" id="statEnergy">0%</div>
+          <div class="label">Průměrná Energie</div>
+        </div>
+        <div class="stat-box">
+          <div class="value" id="statTicks">0</div>
+          <div class="label">Kroků Simulace</div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="sidebar">
+      <section class="card section">
+        <div class="panel-title">
+          <h2>Svět A Filtry</h2>
+          <span>Výběr zobrazení</span>
+        </div>
+
+        <div class="world-switch">
+          <button class="toggle-chip active" id="filterAllBtn">Všechny Objekty</button>
+          <button class="toggle-chip" id="filterActiveBtn">Jen Aktivní</button>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="panel-title">
+          <h2>Seznam Objektů</h2>
+          <span>Klikni pro výběr</span>
+        </div>
+        <div class="object-list" id="objectList"></div>
+      </section>
+
+      <section class="card section">
+        <div class="panel-title">
+          <h2>Rychlé Akce</h2>
+          <span>Správa světa</span>
+        </div>
+
+        <div class="controls-grid">
+          <button class="primary-btn" id="addObjectBtn">Přidat Nový Objekt</button>
+          <button class="action-btn" id="tickBtnLeft">Posunout Simulaci (Tick)</button>
+          <button class="action-btn" id="resetBtnLeft">Resetovat Svět</button>
+        </div>
+      </section>
+    </aside>
+
+    <main class="main">
+      <section class="card map-shell">
+        <div class="panel-title">
+          <h2>Interaktivní Mapa Světa</h2>
+          <span>Objekty lze přetahovat myší</span>
+        </div>
+
+        <div class="map-toolbar">
+          <div class="toolbar-left">
+            <button class="mini-pill active" id="showLabelsBtn">Štítky Zapnuté</button>
+            <button class="mini-pill active" id="showCoordsBtn">Souřadnice Zapnuté</button>
+          </div>
+          <div class="toolbar-right">
+            <div class="mini-pill">Střed Mapy = [0, 0]</div>
+          </div>
+        </div>
+
+        <div class="map-wrapper" id="worldMap">
+          <div class="radar-rings">
+            <div class="ring r1"></div>
+            <div class="ring r2"></div>
+            <div class="ring r3"></div>
+            <div class="ring r4"></div>
+          </div>
+
+          <div class="axis-x"></div>
+          <div class="axis-y"></div>
+
+          <div class="map-label" style="top:10px; left:14px;">Y+</div>
+          <div class="map-label" style="bottom:10px; left:14px;">Y-</div>
+          <div class="map-label" style="top:10px; right:14px;">X+</div>
+          <div class="map-label" style="bottom:10px; right:14px;">Radar Mřížka</div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="panel-title">
+          <h2>Konzole</h2>
+          <span>Textové rozhraní</span>
+        </div>
+
+        <div class="console-shell">
+          <div class="console-header">
+            <div class="dots">
+              <div class="dot red"></div>
+              <div class="dot yellow"></div>
+              <div class="dot green"></div>
+            </div>
+            <div style="font-size:13px;color:var(--muted);">universal-console://generic-world</div>
+          </div>
+
+          <div class="console-output" id="consoleOutput"></div>
+
+          <div class="console-input-wrap">
+            <input
+              type="text"
+              id="commandInput"
+              class="console-input"
+              placeholder="Např.: status robot | set lamp on | move drone 2 -1 | create sensor scanner 80 1 2"
+            />
+            <button class="primary-btn" id="runBtn">Spustit</button>
+            <button class="action-btn" id="clearConsoleBtn">Vyčistit Log</button>
+          </div>
+        </div>
+      </section>
+
+      <section class="card section">
+        <div class="panel-title">
+          <h2>Podporované Příkazy</h2>
+          <span>Přehled</span>
+        </div>
+
+        <div class="command-help">
+          <div class="command-item">
+            <code>help</code>
+            <p>Vypíše dostupné příkazy.</p>
+          </div>
+          <div class="command-item">
+            <code>list</code>
+            <p>Vypíše všechny objekty ve světě.</p>
+          </div>
+          <div class="command-item">
+            <code>status &lt;objekt&gt;</code>
+            <p>Zobrazí detail stavu objektu.</p>
+          </div>
+          <div class="command-item">
+            <code>set &lt;objekt&gt; on/off</code>
+            <p>Zapne nebo vypne objekt.</p>
+          </div>
+          <div class="command-item">
+            <code>move &lt;objekt&gt; dx dy</code>
+            <p>Posune objekt o zadaný krok.</p>
+          </div>
+          <div class="command-item">
+            <code>energy &lt;objekt&gt; &lt;0-100&gt;</code>
+            <p>Nastaví energii objektu.</p>
+          </div>
+          <div class="command-item">
+            <code>create &lt;název&gt; &lt;typ&gt; &lt;energie&gt; &lt;x&gt; &lt;y&gt;</code>
+            <p>Vytvoří nový objekt.</p>
+          </div>
+          <div class="command-item">
+            <code>delete &lt;objekt&gt;</code>
+            <p>Smaže objekt ze světa.</p>
+          </div>
+          <div class="command-item">
+            <code>tick</code>
+            <p>Posune simulaci o 1 krok.</p>
+          </div>
+          <div class="command-item">
+            <code>reset</code>
+            <p>Vrátí svět do výchozího stavu.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <aside class="rightbar">
+      <section class="card section">
+        <div class="panel-title">
+          <h2>Vybraný Objekt</h2>
+          <span>Detailní Ovládání</span>
+        </div>
+        <div class="detail-panel" id="detailPanel"></div>
+      </section>
+    </aside>
+  </div>
+
+  <div class="modal-backdrop" id="createModalBackdrop">
+    <div class="modal">
+      <div class="modal-head">
+        <div>
+          <h3>Přidat Nový Objekt</h3>
+          <p>Vytvoř nový objekt do virtuálního světa.</p>
+        </div>
+        <button class="icon-btn" id="closeModalBtn">×</button>
+      </div>
+
+      <div class="form-grid">
+        <input type="text" id="newName" placeholder="Název objektu, např. Sensor">
+        <input type="text" id="newType" placeholder="Typ objektu, např. Scanner">
+        <div class="row-2">
+          <input type="number" id="newEnergy" min="0" max="100" value="80" placeholder="Energie">
+          <select id="newState">
+            <option value="on">Zapnutý</option>
+            <option value="off">Vypnutý</option>
+          </select>
+        </div>
+        <div class="row-2">
+          <input type="number" id="newX" value="0" placeholder="X">
+          <input type="number" id="newY" value="0" placeholder="Y">
+        </div>
+      </div>
+
+      <div class="footer-actions">
+        <button class="action-btn" id="cancelModalBtn">Zrušit</button>
+        <button class="primary-btn" id="confirmAddBtn">Vytvořit Objekt</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    class WorldObject {
+      constructor(name, type, active, energy, x, y, color) {
+        this.name = this.toDisplayName(name);
+        this.key = this.slugify(name);
+        this.type = this.toDisplayName(type);
+        this.active = Boolean(active);
+        this.energy = this.normalizeEnergy(energy);
+        this.x = Number(x);
+        this.y = Number(y);
+        this.color = color;
+      }
+
+      toDisplayName(value) {
+        return String(value)
+          .trim()
+          .toLowerCase()
+          .split(/[\s_-]+/)
+          .filter(Boolean)
+          .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+          .join(" ");
+      }
+
+      slugify(value) {
+        return String(value)
+          .trim()
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .replace(/[^a-z0-9]+/g, "-")
+          .replace(/^-+|-+$/g, "") || "objekt";
+      }
+
+      normalizeEnergy(value) {
+        const num = Number(value);
+        return Math.max(0, Math.min(100, Number.isNaN(num) ? 0 : num));
+      }
+
+      getStatus() {
+        return {
+          key: this.key,
+          name: this.name,
+          type: this.type,
+          active: this.active,
+          energy: this.energy,
+          x: this.x,
+          y: this.y,
+          color: this.color
+        };
+      }
+
+      setActive(value) {
+        this.active = Boolean(value);
+      }
+
+      setEnergy(value) {
+        this.energy = this.normalizeEnergy(value);
+        if (this.energy === 0) {
+          this.active = false;
+        }
+      }
+
+      setPosition(x, y) {
+        this.x = Number(x);
+        this.y = Number(y);
+      }
+
+      move(dx, dy) {
+        this.x += Number(dx);
+        this.y += Number(dy);
+      }
+
+      tick() {
+        if (this.active && this.energy > 0) {
+          this.energy = Math.max(0, this.energy - 5);
+        }
+        if (this.energy === 0) {
+          this.active = false;
+        }
+      }
+    }
+
+    class IWorld {
+      listObjects() {
+        throw new Error("Metoda listObjects() není implementována.");
+      }
+
+      getStatus() {
+        throw new Error("Metoda getStatus() není implementována.");
+      }
+
+      getSummary() {
+        throw new Error("Metoda getSummary() není implementována.");
+      }
+
+      executeAction() {
+        throw new Error("Metoda executeAction() není implementována.");
+      }
+
+      reset() {
+        throw new Error("Metoda reset() není implementována.");
+      }
+    }
+
+    class VirtualWorld extends IWorld {
+      constructor() {
+        super();
+        this.ticks = 0;
+        this.palette = ["#46dcff", "#8b5cf6", "#34e18d", "#ff9f43", "#ff4ecd", "#4f8cff", "#ffd166"];
+        this.reset();
+      }
+
+      reset() {
+        this.objects = {
+          robot: new WorldObject("Robot", "Robotická Jednotka", true, 90, 2, 3, "#46dcff"),
+          lamp: new WorldObject("Lamp", "Osvětlovací Modul", false, 100, 5, 1, "#ff6b6b"),
+          drone: new WorldObject("Drone", "Letecký Průzkumník", true, 70, -1, 4, "#8b5cf6"),
+          rover: new WorldObject("Rover", "Terénní Průzkumník", true, 65, -4, -2, "#34e18d")
+        };
+        this.ticks = 0;
+      }
+
+      nextColor() {
+        const count = this.listObjects().length;
+        return this.palette[count % this.palette.length];
+      }
+
+      listObjects() {
+        return Object.keys(this.objects);
+      }
+
+      getObject(keyOrName) {
+        if (!keyOrName) return null;
+        const normalized = String(keyOrName).trim().toLowerCase();
+
+        if (this.objects[normalized]) {
+          return this.objects[normalized];
+        }
+
+        return Object.values(this.objects).find(obj =>
+          obj.name.toLowerCase() === normalized ||
+          obj.key.toLowerCase() === normalized
+        ) || null;
+      }
+
+      getStatus(keyOrName) {
+        const obj = this.getObject(keyOrName);
+        if (!obj) {
+          return { error: `Objekt '${keyOrName}' neexistuje.` };
+        }
+        return obj.getStatus();
+      }
+
+      getSummary() {
+        const all = this.listObjects().map(key => this.objects[key]);
+        const total = all.length;
+        const active = all.filter(obj => obj.active).length;
+        const avgEnergy = total ? Math.round(all.reduce((sum, obj) => sum + obj.energy, 0) / total) : 0;
+        return { total, active, avgEnergy, ticks: this.ticks };
+      }
+
+      executeAction(action, payload = {}) {
+        switch (action) {
+          case "create": {
+            const { name, type, energy, x, y, active = true } = payload;
+            if (!name || !type) {
+              return { error: "Pro vytvoření objektu je potřeba zadat název i typ." };
+            }
+
+            const temp = new WorldObject(name, type, active, Number(energy), Number(x), Number(y), this.nextColor());
+            let key = temp.key;
+            let suffix = 2;
+
+            while (this.objects[key]) {
+              key = `${temp.key}-${suffix++}`;
+            }
+
+            temp.key = key;
+            this.objects[key] = temp;
+            return { success: `Objekt '${temp.name}' byl vytvořen.`, key };
+          }
+
+          case "delete": {
+            const obj = this.getObject(payload.target);
+            if (!obj) return { error: `Objekt '${payload.target}' neexistuje.` };
+            delete this.objects[obj.key];
+            return { success: `Objekt '${obj.name}' byl odstraněn.` };
+          }
+
+          case "setState": {
+            const obj = this.getObject(payload.target);
+            if (!obj) return { error: `Objekt '${payload.target}' neexistuje.` };
+            if (payload.state !== "on" && payload.state !== "off") {
+              return { error: "Použij hodnotu 'on' nebo 'off'." };
+            }
+            obj.setActive(payload.state === "on");
+            return { success: `Objekt '${obj.name}' byl nastaven na ${payload.state}.` };
+          }
+
+          case "move": {
+            const obj = this.getObject(payload.target);
+            if (!obj) return { error: `Objekt '${payload.target}' neexistuje.` };
+            if (Number.isNaN(Number(payload.dx)) || Number.isNaN(Number(payload.dy))) {
+              return { error: "dx a dy musí být čísla." };
+            }
+            obj.move(Number(payload.dx), Number(payload.dy));
+            return { success: `Objekt '${obj.name}' se přesunul o [${payload.dx}, ${payload.dy}].` };
+          }
+
+          case "setPosition": {
+            const obj = this.getObject(payload.target);
+            if (!obj) return { error: `Objekt '${payload.target}' neexistuje.` };
+            if (Number.isNaN(Number(payload.x)) || Number.isNaN(Number(payload.y))) {
+              return { error: "X a Y musí být čísla." };
+            }
+            obj.setPosition(Number(payload.x), Number(payload.y));
+            return { success: `Pozice objektu '${obj.name}' byla nastavena na [${payload.x}, ${payload.y}].` };
+          }
+
+          case "setEnergy": {
+            const obj = this.getObject(payload.target);
+            if (!obj) return { error: `Objekt '${payload.target}' neexistuje.` };
+            if (Number.isNaN(Number(payload.value))) {
+              return { error: "Energie musí být číslo 0-100." };
+            }
+            obj.setEnergy(Number(payload.value));
+            return { success: `Energie objektu '${obj.name}' byla nastavena na ${obj.energy}%.` };
+          }
+
+          case "tick": {
+            for (const key in this.objects) {
+              this.objects[key].tick();
+            }
+            this.ticks++;
+            return { success: "Simulace byla posunuta o 1 krok." };
+          }
+
+          default:
+            return { error: `Neznámá akce '${action}'.` };
+        }
+      }
+    }
+
+    class CommandProcessor {
+      constructor(world) {
+        this.world = world;
+      }
+
+      execute(input) {
+        const parts = input.trim().split(/\s+/);
+        const command = parts[0]?.toLowerCase();
+
+        if (!command) {
+          return { type: "warn", message: "Nebyl zadán žádný příkaz." };
+        }
+
+        switch (command) {
+          case "help":
+            return {
+              type: "sys",
+              message:
+`Dostupné příkazy:
+- help
+- list
+- status <objekt>
+- set <objekt> on/off
+- move <objekt> dx dy
+- energy <objekt> <0-100>
+- create <název> <typ> <energie> <x> <y>
+- delete <objekt>
+- tick
+- reset`
+            };
+
+          case "list": {
+            const names = this.world.listObjects()
+              .map(key => this.world.getStatus(key).name)
+              .join(", ");
+            return {
+              type: "sys",
+              message: `Objekty ve světě: ${names}`
+            };
+          }
+
+          case "status": {
+            if (parts.length < 2) {
+              return { type: "err", message: "Použití: status <objekt>" };
+            }
+            const result = this.world.getStatus(parts[1]);
+            if (result.error) return { type: "err", message: result.error };
+
+            return {
+              type: "sys",
+              message:
+`Status objektu '${result.name}':
+- typ: ${result.type}
+- stav: ${result.active ? "ON" : "OFF"}
+- energie: ${result.energy}%
+- pozice: [${result.x}, ${result.y}]`
+            };
+          }
+
+          case "set": {
+            if (parts.length < 3) {
+              return { type: "err", message: "Použití: set <objekt> on/off" };
+            }
+            const result = this.world.executeAction("setState", {
+              target: parts[1],
+              state: parts[2].toLowerCase()
+            });
+            if (result.error) return { type: "err", message: result.error };
+            return { type: "sys", message: result.success };
+          }
+
+          case "move": {
+            if (parts.length < 4) {
+              return { type: "err", message: "Použití: move <objekt> dx dy" };
+            }
+            const result = this.world.executeAction("move", {
+              target: parts[1],
+              dx: parts[2],
+              dy: parts[3]
+            });
+            if (result.error) return { type: "err", message: result.error };
+            return { type: "sys", message: result.success };
+          }
+
+          case "energy": {
+            if (parts.length < 3) {
+              return { type: "err", message: "Použití: energy <objekt> <0-100>" };
+            }
+            const result = this.world.executeAction("setEnergy", {
+              target: parts[1],
+              value: parts[2]
+            });
+            if (result.error) return { type: "err", message: result.error };
+            return { type: "sys", message: result.success };
+          }
+
+          case "create": {
+            if (parts.length < 6) {
+              return { type: "err", message: "Použití: create <název> <typ> <energie> <x> <y>" };
+            }
+
+            const [_, name, type, energy, x, y] = parts;
+            const result = this.world.executeAction("create", {
+              name,
+              type,
+              energy,
+              x,
+              y,
+              active: true
+            });
+
+            if (result.error) return { type: "err", message: result.error };
+            return { type: "sys", message: result.success, selectedKey: result.key };
+          }
+
+          case "delete": {
+            if (parts.length < 2) {
+              return { type: "err", message: "Použití: delete <objekt>" };
+            }
+            const result = this.world.executeAction("delete", {
+              target: parts[1]
+            });
+            if (result.error) return { type: "err", message: result.error };
+            return { type: "sys", message: result.success, deleted: true };
+          }
+
+          case "tick": {
+            const result = this.world.executeAction("tick");
+            return { type: result.error ? "err" : "sys", message: result.error || result.success };
+          }
+
+          case "reset":
+            this.world.reset();
+            return { type: "sys", message: "Svět byl resetován do výchozího stavu." };
+
+          default:
+            return { type: "err", message: `Neznámý příkaz: '${command}'. Zkus 'help'.` };
+        }
+      }
+    }
+
+    const world = new VirtualWorld();
+    const processor = new CommandProcessor(world);
+
+    let selectedKey = "robot";
+    let filterMode = "all";
+    let showLabels = true;
+    let showCoords = true;
+
+    const objectList = document.getElementById("objectList");
+    const detailPanel = document.getElementById("detailPanel");
+    const worldMap = document.getElementById("worldMap");
+    const consoleOutput = document.getElementById("consoleOutput");
+    const commandInput = document.getElementById("commandInput");
+
+    const statTotal = document.getElementById("statTotal");
+    const statActive = document.getElementById("statActive");
+    const statEnergy = document.getElementById("statEnergy");
+    const statTicks = document.getElementById("statTicks");
+
+    const filterAllBtn = document.getElementById("filterAllBtn");
+    const filterActiveBtn = document.getElementById("filterActiveBtn");
+    const showLabelsBtn = document.getElementById("showLabelsBtn");
+    const showCoordsBtn = document.getElementById("showCoordsBtn");
+
+    const createModalBackdrop = document.getElementById("createModalBackdrop");
+    const addObjectBtn = document.getElementById("addObjectBtn");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const cancelModalBtn = document.getElementById("cancelModalBtn");
+    const confirmAddBtn = document.getElementById("confirmAddBtn");
+
+    const tickBtnLeft = document.getElementById("tickBtnLeft");
+    const resetBtnLeft = document.getElementById("resetBtnLeft");
+    const runBtn = document.getElementById("runBtn");
+    const clearConsoleBtn = document.getElementById("clearConsoleBtn");
+
+    function addLine(text, cls = "sys") {
+      const div = document.createElement("div");
+      div.className = `line ${cls}`;
+      div.textContent = text;
+      consoleOutput.appendChild(div);
+      consoleOutput.scrollTop = consoleOutput.scrollHeight;
+    }
+
+    function clamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    function mapXToPercent(x) {
+      return clamp(50 + x * 4.8, 4, 96);
+    }
+
+    function mapYToPercent(y) {
+      return clamp(50 - y * 4.8, 4, 96);
+    }
+
+    function percentToMapX(percent) {
+      return Math.round((percent - 50) / 4.8);
+    }
+
+    function percentToMapY(percent) {
+      return Math.round((50 - percent) / 4.8);
+    }
+
+    function getFilteredKeys() {
+      return world.listObjects().filter(key => {
+        const obj = world.objects[key];
+        return filterMode === "all" ? true : obj.active;
+      });
+    }
+
+    function ensureSelectedExists() {
+      if (!world.objects[selectedKey]) {
+        const keys = world.listObjects();
+        selectedKey = keys.length ? keys[0] : null;
+      }
+    }
+
+    function updateStats() {
+      const summary = world.getSummary();
+      statTotal.textContent = summary.total;
+      statActive.textContent = summary.active;
+      statEnergy.textContent = summary.avgEnergy + "%";
+      statTicks.textContent = summary.ticks;
+    }
+
+    function renderObjectList() {
+      ensureSelectedExists();
+      objectList.innerHTML = "";
+
+      const keys = getFilteredKeys();
+
+      if (!keys.length) {
+        objectList.innerHTML = `<div class="small-note">Momentálně filtru neodpovídá žádný objekt.</div>`;
+        return;
+      }
+
+      keys.forEach(key => {
+        const obj = world.objects[key];
+        const item = document.createElement("div");
+        item.className = `object-item ${selectedKey === key ? "active-item" : ""}`;
+        item.innerHTML = `
+          <div class="object-item-top">
+            <div>
+              <div class="object-item-name">${obj.name}</div>
+              <div class="object-item-type">${obj.type}</div>
+            </div>
+            <div class="dot-state ${obj.active ? "dot-on" : "dot-off"}"></div>
+          </div>
+          <div class="object-item-bottom">
+            <span>Energie ${obj.energy}%</span>
+            <span>[${obj.x}, ${obj.y}]</span>
+          </div>
+        `;
+        item.addEventListener("click", () => {
+          selectedKey = key;
+          renderAll();
+        });
+        objectList.appendChild(item);
+      });
+    }
+
+    function renderDetail() {
+      ensureSelectedExists();
+      const obj = world.objects[selectedKey];
+
+      if (!obj) {
+        detailPanel.innerHTML = `<div class="small-note">Ve světě není žádný objekt.</div>`;
+        return;
+      }
+
+      detailPanel.innerHTML = `
+        <div class="detail-hero">
+          <div class="detail-top">
+            <div>
+              <div class="detail-name">${obj.name}</div>
+              <div class="detail-type">${obj.type}</div>
+            </div>
+            <div class="status-badge ${obj.active ? "on" : "off"}">${obj.active ? "ON" : "OFF"}</div>
+          </div>
+
+          <div class="detail-stats">
+            <div class="detail-stat">
+              <div class="small">Energie</div>
+              <div class="big">${obj.energy}%</div>
+            </div>
+            <div class="detail-stat">
+              <div class="small">Pozice</div>
+              <div class="big">[${obj.x}, ${obj.y}]</div>
+            </div>
+            <div class="detail-stat">
+              <div class="small">Klíč</div>
+              <div class="big" style="font-size:15px;">${obj.key}</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="control-box">
+          <div class="control-box-head">
+            <h3>Stav Objektu</h3>
+            <span>Přímé zapnutí nebo vypnutí</span>
+          </div>
+          <div class="row">
+            <button class="${obj.active ? "danger-btn" : "primary-btn"}" id="toggleStateBtn">
+              ${obj.active ? "Vypnout Objekt" : "Zapnout Objekt"}
+            </button>
+          </div>
+        </div>
+
+        <div class="control-box">
+          <div class="control-box-head">
+            <h3>Energie</h3>
+            <span>Slider + číslo</span>
+          </div>
+          <div class="energy-wrap">
+            <input type="range" min="0" max="100" value="${obj.energy}" id="energyRange">
+            <input type="number" min="0" max="100" value="${obj.energy}" id="energyInput" class="energy-number">
+          </div>
+          <div class="energy-bar">
+            <div class="energy-fill" style="width:${obj.energy}%"></div>
+          </div>
+        </div>
+
+        <div class="control-box">
+          <div class="control-box-head">
+            <h3>Souřadnice</h3>
+            <span>Změna ihned pohne objektem na mapě</span>
+          </div>
+          <div class="row-2">
+            <input type="number" value="${obj.x}" id="posXInput" placeholder="X">
+            <input type="number" value="${obj.y}" id="posYInput" placeholder="Y">
+          </div>
+          <div class="row" style="margin-top:10px;">
+            <button class="action-btn" id="savePosBtn">Uložit Pozici</button>
+            <button class="action-btn" id="stepPlusX">+X</button>
+            <button class="action-btn" id="stepMinusX">-X</button>
+            <button class="action-btn" id="stepPlusY">+Y</button>
+            <button class="action-btn" id="stepMinusY">-Y</button>
+          </div>
+        </div>
+
+        <div class="control-box">
+          <div class="control-box-head">
+            <h3>Rychlé Akce</h3>
+            <span>Status, doplnění energie a odstranění</span>
+          </div>
+          <div class="row">
+            <button class="primary-btn" id="statusBtn">Vypsat Status</button>
+            <button class="action-btn" id="fullEnergyBtn">100%</button>
+            <button class="action-btn" id="zeroEnergyBtn">0%</button>
+            <button class="danger-btn" id="deleteBtn">Smazat Objekt</button>
+          </div>
+        </div>
+      `;
+
+      document.getElementById("toggleStateBtn").addEventListener("click", () => {
+        const newState = obj.active ? "off" : "on";
+        const result = world.executeAction("setState", {
+          target: obj.key,
+          state: newState
+        });
+        addLine(result.success || result.error, result.error ? "err" : "sys");
+        renderAll();
+      });
+
+      const energyRange = document.getElementById("energyRange");
+      const energyInput = document.getElementById("energyInput");
+
+      energyRange.addEventListener("input", () => {
+        world.executeAction("setEnergy", {
+          target: obj.key,
+          value: energyRange.value
+        });
+        renderAll();
+      });
+
+      energyInput.addEventListener("input", () => {
+        let val = Number(energyInput.value);
+        if (Number.isNaN(val)) val = 0;
+        val = clamp(val, 0, 100);
+        world.executeAction("setEnergy", {
+          target: obj.key,
+          value: val
+        });
+        renderAll();
+      });
+
+      document.getElementById("savePosBtn").addEventListener("click", () => {
+        const x = document.getElementById("posXInput").value;
+        const y = document.getElementById("posYInput").value;
+        const result = world.executeAction("setPosition", {
+          target: obj.key,
+          x,
+          y
+        });
+        addLine(result.success || result.error, result.error ? "err" : "sys");
+        renderAll();
+      });
+
+      document.getElementById("stepPlusX").addEventListener("click", () => moveSelected(1, 0));
+      document.getElementById("stepMinusX").addEventListener("click", () => moveSelected(-1, 0));
+      document.getElementById("stepPlusY").addEventListener("click", () => moveSelected(0, 1));
+      document.getElementById("stepMinusY").addEventListener("click", () => moveSelected(0, -1));
+
+      document.getElementById("statusBtn").addEventListener("click", () => {
+        const result = world.getStatus(obj.key);
+        addLine(
+`Status objektu '${result.name}':
+- typ: ${result.type}
+- stav: ${result.active ? "ON" : "OFF"}
+- energie: ${result.energy}%
+- pozice: [${result.x}, ${result.y}]`, "sys");
+      });
+
+      document.getElementById("fullEnergyBtn").addEventListener("click", () => {
+        const result = world.executeAction("setEnergy", { target: obj.key, value: 100 });
+        addLine(result.success, "sys");
+        renderAll();
+      });
+
+      document.getElementById("zeroEnergyBtn").addEventListener("click", () => {
+        const result = world.executeAction("setEnergy", { target: obj.key, value: 0 });
+        addLine(result.success, "sys");
+        renderAll();
+      });
+
+      document.getElementById("deleteBtn").addEventListener("click", () => {
+        const result = world.executeAction("delete", { target: obj.key });
+        addLine(result.success || result.error, result.error ? "err" : "sys");
+        ensureSelectedExists();
+        renderAll();
+      });
+    }
+
+    function renderMap() {
+      worldMap.querySelectorAll(".map-object").forEach(el => el.remove());
+
+      const filtered = new Set(getFilteredKeys());
+
+      world.listObjects().forEach(key => {
+        const obj = world.objects[key];
+
+        const el = document.createElement("div");
+        el.className = `map-object ${obj.active ? "active-state" : "inactive-state"} ${selectedKey === key ? "selected" : ""} ${filtered.has(key) ? "" : "hidden"}`;
+        el.dataset.key = key;
+        el.style.left = mapXToPercent(obj.x) + "%";
+        el.style.top = mapYToPercent(obj.y) + "%";
+
+        el.innerHTML = `
+          <div class="map-core" style="background:${obj.active ? `linear-gradient(135deg, ${obj.color}, #ffffff22)` : `linear-gradient(135deg, #ff6b6b, #ffffff22)`};"></div>
+          ${showLabels ? `<div class="map-object-name">${obj.name}</div>` : ""}
+          ${showCoords ? `<div class="map-object-coord">[${obj.x}, ${obj.y}]</div>` : ""}
+        `;
+
+        el.addEventListener("click", (e) => {
+          e.stopPropagation();
+          selectedKey = key;
+          renderAll();
+        });
+
+        attachDrag(el, obj);
+        worldMap.appendChild(el);
+      });
+    }
+
+    function attachDrag(element, obj) {
+      let dragging = false;
+
+      const onMouseMove = (e) => {
+        if (!dragging) return;
+
+        const rect = worldMap.getBoundingClientRect();
+        const xPercent = clamp(((e.clientX - rect.left) / rect.width) * 100, 4, 96);
+        const yPercent = clamp(((e.clientY - rect.top) / rect.height) * 100, 4, 96);
+
+        const newX = percentToMapX(xPercent);
+        const newY = percentToMapY(yPercent);
+
+        world.executeAction("setPosition", {
+          target: obj.key,
+          x: newX,
+          y: newY
+        });
+
+        element.style.left = xPercent + "%";
+        element.style.top = yPercent + "%";
+
+        if (showCoords) {
+          const coord = element.querySelector(".map-object-coord");
+          if (coord) coord.textContent = `[${newX}, ${newY}]`;
+        }
+      };
+
+      const stopDragging = () => {
+        if (!dragging) return;
+
+        dragging = false;
+        element.classList.remove("dragging");
+        window.removeEventListener("mousemove", onMouseMove);
+        window.removeEventListener("mouseup", stopDragging);
+
+        selectedKey = obj.key;
+        addLine(`Objekt '${obj.name}' byl přetažen na [${obj.x}, ${obj.y}].`, "sys");
+        renderAll();
+      };
+
+      element.addEventListener("mousedown", (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dragging = true;
+        selectedKey = obj.key;
+        element.classList.add("dragging");
+        window.addEventListener("mousemove", onMouseMove);
+        window.addEventListener("mouseup", stopDragging);
+      });
+    }
+
+    function moveSelected(dx, dy) {
+      const obj = world.objects[selectedKey];
+      if (!obj) return;
+
+      const result = world.executeAction("move", {
+        target: obj.key,
+        dx,
+        dy
+      });
+
+      addLine(result.success || result.error, result.error ? "err" : "sys");
+      renderAll();
+    }
+
+    function renderAll() {
+      ensureSelectedExists();
+      updateStats();
+      renderObjectList();
+      renderDetail();
+      renderMap();
+      syncFilterButtons();
+      syncMapButtons();
+    }
+
+    function syncFilterButtons() {
+      filterAllBtn.classList.toggle("active", filterMode === "all");
+      filterActiveBtn.classList.toggle("active", filterMode === "active");
+    }
+
+    function syncMapButtons() {
+      showLabelsBtn.classList.toggle("active", showLabels);
+      showLabelsBtn.textContent = showLabels ? "Štítky Zapnuté" : "Štítky Vypnuté";
+
+      showCoordsBtn.classList.toggle("active", showCoords);
+      showCoordsBtn.textContent = showCoords ? "Souřadnice Zapnuté" : "Souřadnice Vypnuté";
+    }
+
+    function openModal() {
+      createModalBackdrop.classList.add("show");
+    }
+
+    function closeModal() {
+      createModalBackdrop.classList.remove("show");
+    }
+
+    function createObjectFromModal() {
+      const name = document.getElementById("newName").value.trim();
+      const type = document.getElementById("newType").value.trim();
+      const energy = document.getElementById("newEnergy").value;
+      const state = document.getElementById("newState").value;
+      const x = document.getElementById("newX").value;
+      const y = document.getElementById("newY").value;
+
+      if (!name || !type) {
+        addLine("Při vytváření objektu je potřeba vyplnit název i typ.", "err");
+        return;
+      }
+
+      const result = world.executeAction("create", {
+        name,
+        type,
+        energy,
+        x,
+        y,
+        active: state === "on"
+      });
+
+      if (result.error) {
+        addLine(result.error, "err");
+        return;
+      }
+
+      selectedKey = result.key;
+      addLine(result.success, "sys");
+      closeModal();
+      renderAll();
+    }
+
+    function runCommand() {
+      const input = commandInput.value.trim();
+      if (!input) return;
+
+      addLine("> " + input, "prompt");
+
+      const result = processor.execute(input);
+      addLine(result.message, result.type);
+
+      if (result.selectedKey) {
+        selectedKey = result.selectedKey;
+      } else {
+        const possibleKey = input.split(/\s+/)[1]?.toLowerCase();
+        if (possibleKey && world.getObject(possibleKey)) {
+          selectedKey = world.getObject(possibleKey).key;
+        } else {
+          ensureSelectedExists();
+        }
+      }
+
+      renderAll();
+      commandInput.value = "";
+      commandInput.focus();
+    }
+
+    function addIntro() {
+      addLine("Systém byl inicializován.", "sys");
+      addLine("Zadej 'help' pro seznam příkazů.", "sys");
+    }
+
+    filterAllBtn.addEventListener("click", () => {
+      filterMode = "all";
+      renderAll();
+    });
+
+    filterActiveBtn.addEventListener("click", () => {
+      filterMode = "active";
+      renderAll();
+    });
+
+    showLabelsBtn.addEventListener("click", () => {
+      showLabels = !showLabels;
+      renderAll();
+    });
+
+    showCoordsBtn.addEventListener("click", () => {
+      showCoords = !showCoords;
+      renderAll();
+    });
+
+    addObjectBtn.addEventListener("click", openModal);
+    closeModalBtn.addEventListener("click", closeModal);
+    cancelModalBtn.addEventListener("click", closeModal);
+    confirmAddBtn.addEventListener("click", createObjectFromModal);
+
+    createModalBackdrop.addEventListener("click", (e) => {
+      if (e.target === createModalBackdrop) closeModal();
+    });
+
+    tickBtnLeft.addEventListener("click", () => {
+      const result = world.executeAction("tick");
+      addLine("> tick", "prompt");
+      addLine(result.success || result.error, result.error ? "err" : "sys");
+      renderAll();
+    });
+
+    resetBtnLeft.addEventListener("click", () => {
+      world.reset();
+      selectedKey = "robot";
+      addLine("Svět byl resetován do výchozího stavu.", "sys");
+      renderAll();
+    });
+
+    runBtn.addEventListener("click", runCommand);
+
+    commandInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") runCommand();
+    });
+
+    clearConsoleBtn.addEventListener("click", () => {
+      consoleOutput.innerHTML = "";
+      addIntro();
+    });
+
+    worldMap.addEventListener("click", () => {
+      renderAll();
+    });
+
+    renderAll();
+    addIntro();
+  </script>
+</body>
+</html>
